@@ -41,7 +41,6 @@ class TranscationController extends AppBaseController
      */
     public function index(Request $request)
     {
-
         if ($request->has('current_month')) {
             $monthYear = date("m-Y", strtotime('0 month', strtotime('01-' . $request->current_month)));
             $next_month = date("m-Y", strtotime('+1 month', strtotime('01-' . $request->current_month)));
@@ -51,10 +50,6 @@ class TranscationController extends AppBaseController
             $next_month = date("m-Y", strtotime('+1 month', strtotime(date('Y-m-d'))));
             $previous_month = date("m-Y", strtotime('-1 month', strtotime(date('Y-m-d'))));
         }
-
-        if ($request->has('type')) {
-            $type = $request->type == "Income" ? '1' : '0';
-        }
         $data = explode('-', $monthYear);
         $month = $data[0];
         $year = $data[1];
@@ -62,66 +57,17 @@ class TranscationController extends AppBaseController
             ->select('transcations.*')
             ->whereMonth('date', $month)
             ->where('accounts.is_default', 1)
-            ->whereYear('date', $year);
-
-        if ($request->has('type') && $request->type != "") {
-            $type = $request->type == "Income" ? '1' : '0';
-            $transactions->where('transcations.type', $type);
-            $typeSelected = $request->type;
-        } else {
-            $typeSelected = "";
-        }
-        if ($request->has('category_id') && $request->category_id != "") {
-            $category_id = $request->category_id;
-            $transactions->where('transcations.category_id', $category_id);
-            $categorySelected = $request->category_id;
-        } else {
-            $categorySelected = "";
-        }
-        if ($request->has('mode_id') && $request->mode_id != "") {
-            $mode_id = $request->mode_id;
-            $transactions->where('transcations.mode_id', $mode_id);
-            $modeSelected = $request->mode_id;
-        } else {
-            $modeSelected = "";
-        }
-
-        $transactions = $transactions->orderBy('date', 'desc')
-            ->orderBy('time', 'asc')
-            ->paginate(10);
-        $total_income = Transcation::LeftJoin('accounts', 'accounts.id', 'transcations.account_id')
-            ->whereMonth('date', $month)
             ->whereYear('date', $year)
-            ->where('transcations.type', '1')
-            ->where('transcations.created_by', auth()->user()->id)
-            ->where('accounts.is_default', '1')
-            ->get()->sum('amount');
-        $total_expense = Transcation::LeftJoin('accounts', 'accounts.id', 'transcations.account_id')
-            ->whereMonth('date', $month)
-            ->whereYear('date', $year)
-            ->where('transcations.type', '0')
-            ->where('transcations.created_by', auth()->user()->id)
-            ->where('accounts.is_default', '1')
-            ->get()->sum('amount');
+            ->orderBy('date', 'desc')->orderBy('time', 'asc')->paginate(10);
+        $total_income = Transcation::whereMonth('date', $month)->whereYear('date', $year)->where('type', 1)
+            ->where('created_by', auth()->user()->id)->get()->sum('amount');
+        $total_expense = Transcation::whereMonth('date', $month)
+            ->whereYear('date', $year)->where('type', 0)->sum('amount');
 
         $accounts = Account::all();
-        $categories = Category::all();
-        $modes = Mode::all();
         // $transcations = $this->transcationRepository->paginate(10);
-        return view('transcations.index', compact(
-            'transactions',
-            'monthYear',
-            'next_month',
-            'previous_month',
-            'total_income',
-            'total_expense',
-            'accounts',
-            'categories',
-            'modes',
-            'typeSelected',
-            'categorySelected',
-            'modeSelected'
-        ));
+
+        return view('transcations.index', compact('transactions', 'monthYear', 'next_month', 'previous_month', 'total_income', 'total_expense', 'accounts'));
     }
 
     /**
@@ -267,12 +213,64 @@ class TranscationController extends AppBaseController
             Flash::error($validator->errors()->first());
             return redirect(route('transcations.index'));
         }
-        try {
-            Excel::import(new ImportTranscation($request->import_from), $request->file('transcationFile'));
-        } catch (\Exception $e) {
-            //$e->getMessage()
-            Flash::error('File format is incorrect.Please open excel file and save as xlsx.');
-            return redirect(route('transcations.index'));
+
+        if (strtolower($request->transcationFile->getClientOriginalExtension() == "xls")) {
+            // $path = public_path() . '/excel';
+            // File::isDirectory($path) or File::makeDirectory($path, 0777, true, true);
+            // $file = $request->transcationFile->getClientOriginalName();
+            // $filename = pathinfo($file, PATHINFO_FILENAME);
+            // $xlsxFilePath = public_path('excel/' . $filename . '.xlsx');
+
+            // // Load the XLS file
+            // $xlsFilePath = $request->file('transcationFile');
+            // $path = public_path() . '/excel';
+            // File::isDirectory($path) or File::makeDirectory($path, 0777, true, true);
+            // $file = $request->transcationFile->getClientOriginalName();
+            // $filename = pathinfo($file, PATHINFO_FILENAME);
+            // $xlsxFilePath = public_path('excel/' . $filename . '.xlsx');
+
+
+            // $spreadsheet = IOFactory::load($xlsFilePath);
+            // $xlsxSpreadsheet = new Spreadsheet();
+            // $xlsActiveSheet = $spreadsheet->getActiveSheet();
+
+            // // Get the active sheet from the new XLSX spreadsheet
+            // $xlsxActiveSheet = $xlsxSpreadsheet->getActiveSheet();
+            // foreach ($xlsActiveSheet->getRowIterator() as $row) {
+            //     $coordinatesNo = 1;
+            //     foreach ($row->getCellIterator() as $cell) {
+            //         $coordinates = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O'];
+            //         $values = explode("\t", $cell->getValue());
+            //         if(count($values)){
+            //             dd($values)
+            //         }
+            //         foreach ($values as $key => $value) {
+            //             $coordinate = $coordinates[$key] . $coordinatesNo;
+            //             $xlsxActiveSheet->setCellValue($coordinate, $value);
+            //         }
+            //     }
+            //     $coordinatesNo++;
+            // }
+
+            // // Create a writer for XLSX format
+            // $writer = new Xlsx($xlsxSpreadsheet);
+
+            // // Save the XLSX file
+            // $writer->save($xlsxFilePath);
+            try {
+                Excel::import(new ImportTranscation($request->import_from), $request->file('transcationFile'));
+            } catch (\Exception $e) {
+                Flash::error($e->getMessage());
+                return redirect(route('transcations.index'));
+            }
+            //unlink($xlsxFilePath);
+        } else {
+            try {
+                Excel::import(new ImportTranscation($request->import_from), $request->file('transcationFile'));
+            } catch (\Exception $e) {
+                Flash::error($e->getMessage());
+                return redirect(route('transcations.index'));
+            }
         }
 
         Flash::success('Transcation Imported successfully.');

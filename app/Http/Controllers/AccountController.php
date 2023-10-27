@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateAccountRequest;
-use App\Http\Requests\UpdateAccountRequest;
-use App\Repositories\AccountRepository;
-use App\Http\Controllers\AppBaseController;
-use Illuminate\Http\Request;
 use Flash;
 use Response;
+use App\Models\Account;
+use Illuminate\Http\Request;
+use App\Repositories\AccountRepository;
+use App\Http\Controllers\AppBaseController;
+use App\Http\Requests\CreateAccountRequest;
+use App\Http\Requests\UpdateAccountRequest;
 
 class AccountController extends AppBaseController
 {
@@ -114,6 +115,7 @@ class AccountController extends AppBaseController
      */
     public function update($id, UpdateAccountRequest $request)
     {
+       
         $account = $this->accountRepository->find($id);
 
         if (empty($account)) {
@@ -121,7 +123,11 @@ class AccountController extends AppBaseController
 
             return redirect(route('accounts.index'));
         }
-
+        if(!$request->is_default){
+            $request['is_default'] = 0;
+        }else{
+            Account::whereNotIn('id',[$id])->update(['is_default' => 0]);
+        }
         $account = $this->accountRepository->update($request->all(), $id);
 
         Flash::success('Account updated successfully.');

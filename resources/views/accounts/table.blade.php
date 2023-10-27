@@ -4,6 +4,7 @@
             <tr>
                 <th>Id</th>
                 <th>Name</th>
+                <th>Default</th>
                 <th>Description</th>
                 <th colspan="3">Action</th>
             </tr>
@@ -13,6 +14,7 @@
             <tr>
                 <td>{{ $account->id }}</td>
                 <td>{{ $account->name }}</td>
+                <td>{{ $account->is_default == '1' ? 'Yes' : 'No' }}</td>
                 <td>{{ $account->description }}</td>
                 <td width="120">
                     {!! Form::open(['route' => ['accounts.destroy', $account->id], 'method' => 'delete']) !!}

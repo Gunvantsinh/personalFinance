@@ -39,5 +39,12 @@
         <p>Transcations</p>
     </a>
 </li>
+<li class="nav-item">
+    <a href="javascript::void()"
+       class="nav-link">
+       <i class="nav-icon fas fa-file"></i>
+        <p>Reports</p>
+    </a>
+</li>
 
 

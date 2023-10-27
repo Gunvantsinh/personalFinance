@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,16 +29,16 @@ Auth::routes();
 
 Route::group(['middleware' => 'auth'], function () {
 
-    Route::get('/home', 'HomeController@index')->name('home');
-
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::resource('categories', 'CategoryController');
 
     Route::resource('modes', 'ModeController');
 
-    Route::resource('accounts',"AccountController");
+    Route::resource('accounts', "AccountController");
 
     Route::get('transcations/csv_sample', 'TranscationController@SampleCsv')->name('transcations.csv_sample');
     Route::get('transcations/export', 'TranscationController@exportCsv')->name('transcations.export');
     Route::post('transcations/import', "TranscationController@import")->name('importTranscation');
     Route::resource('transcations', "TranscationController");
+    Route::resource('reports', "ReportController");
 });

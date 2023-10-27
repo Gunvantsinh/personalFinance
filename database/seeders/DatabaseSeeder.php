@@ -21,12 +21,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@test.com',
             'password' => Hash::make('test@123'),
         ]);
-        // $account = Account::create([
-        //     'name' => 'Cash',
-        // ]);
-        // $account = Account::create([
-        //     'name' => 'Online',
-        // ]);
+        // $data = [
+        //     ['name' => 'Bank of Baroda', 'is_default' => '1', 'created_at' => now(), 'updated_at' => now()],
+        //     ['name' => 'SBI', 'is_default' => '0', 'created_at' => now(), 'updated_at' => now()],
+        // ];
+        //Account::insert($data);
         $this->call([
             CategorySeeder::class,
             ModeSeeder::class,

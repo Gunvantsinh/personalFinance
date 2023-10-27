@@ -17,13 +17,13 @@ class CreateTranscationsTable extends Migration
         Schema::create('transcations', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('created_by');
-            $table->boolean('type');
-            $table->integer('amount');
+            $table->enum('type', [0, 1])->default(0);
+            $table->float('amount', 8, 2);
             $table->integer('account_id')->nullable();
-            $table->integer('category_id');
-            $table->integer('mode_id');
+            $table->integer('category_id')->nullable();
+            $table->integer('mode_id')->nullable();
             $table->date('date');
-            $table->time('time');
+            $table->string('time')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();

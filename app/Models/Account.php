@@ -29,7 +29,7 @@ class Account extends Model
 
     public $fillable = [
         'name',
-        // 'type',
+        'is_default',
         'created_by',
         'description'
     ];

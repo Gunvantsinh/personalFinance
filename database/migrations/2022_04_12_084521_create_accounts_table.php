@@ -20,6 +20,7 @@ class CreateAccountsTable extends Migration
             $table->string('name');
             //$table->enum('type', ['Online', 'Cash']);
             $table->text('description')->nullable();
+            $table->boolean('is_default')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

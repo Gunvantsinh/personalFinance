@@ -37,10 +37,14 @@ class HomeController extends Controller
             $end_of_month_for_picker = Carbon::parse($request->end_date)->format('m/d/Y');
             
            
-            $totalIncome = Transcation::whereBetween('date', [$start_date,$end_date])->where('type',1)
-            ->where('created_by',auth()->user()->id)->get()->sum('amount');
-            $totalExpence = Transcation::whereBetween('date',[$start_date,$end_date])->where('type',0)
-            ->where('created_by',auth()->user()->id)->get()->sum('amount');
+            $totalIncome = Transcation::LeftJoin('accounts','accounts.id','transcations.account_id')->whereBetween('date', [$start_date,$end_date])->where('type',1)
+            ->where('accounts.is_default',1)
+            ->where('transcations.created_by',auth()->user()->id)->get()->sum('amount');
+
+            $totalExpence = Transcation::LeftJoin('accounts','accounts.id','transcations.account_id')->whereBetween('date',[$start_date,$end_date])->where('type',0)
+            ->where('transcations.created_by',auth()->user()->id)
+            ->where('accounts.is_default',1)
+            ->get()->sum('amount');
                 
         }else{
 
@@ -57,11 +61,15 @@ class HomeController extends Controller
             $date_range_arr = [date("Y-m-d", strtotime($year_arr . "-" . $fn_month . "-01")),
             date("Y-m-d", strtotime($year_arr + 1 . "-" . $fn_month . "-01 - 1 day"))];
 
-            $totalIncome = Transcation::whereBetween('date', $date_range_arr)->where('type',1)
-            ->where('created_by',auth()->user()->id)->get()->sum('amount');
+            $totalIncome = Transcation::LeftJoin('accounts','accounts.id','transcations.account_id')->whereBetween('date', $date_range_arr)
+            ->where('type',1)
+            ->where('accounts.is_default',1)
+            ->where('transcations.created_by',auth()->user()->id)->get()->sum('amount');
 
-            $totalExpence = Transcation::whereBetween('date', $date_range_arr)->where('type',0)
-            ->where('created_by',auth()->user()->id)->get()->sum('amount');
+            $totalExpence = Transcation::LeftJoin('accounts','accounts.id','transcations.account_id')->whereBetween('date', $date_range_arr)->where('type',0)
+            ->where('transcations.created_by',auth()->user()->id)
+            ->where('accounts.is_default',1)
+            ->get()->sum('amount');
 
         }
             $availableBalance = $totalIncome - $totalExpence;

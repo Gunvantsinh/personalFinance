@@ -22,7 +22,8 @@ class TranscationRepository extends BaseRepository
         'account_id',
         'category_id',
         'mode_id',
-        'date_time',
+        'date',
+        'time',
         'description'
     ];
 

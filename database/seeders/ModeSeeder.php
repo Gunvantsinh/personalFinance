@@ -18,18 +18,19 @@ class ModeSeeder extends Seeder
     public function run()
     {
         $data = [
-            ['name'=>'Cash','created_at'=>now(), 'updated_at'=>now()],
-            ['name'=>'Credit Card','created_at'=>now(), 'updated_at'=>now()],
-            ['name'=>'Debit Card','created_at'=>now(), 'updated_at'=>now()],
-            ['name'=>'Net Banking','created_at'=>now(), 'updated_at'=>now()],
-            ['name'=>'Cheque','created_at'=>now(), 'updated_at'=>now()],
-            ['name'=>'Google Pay','created_at'=>now(), 'updated_at'=>now()],
-            ['name'=>'Phonepe','created_at'=>now(), 'updated_at'=>now()],
-            ['name'=>'Paytm','created_at'=>now(), 'updated_at'=>now()],
-            ['name'=>'AmazonPe','created_at'=>now(), 'updated_at'=>now()],
-            ['name'=>'ATM','created_at'=>now(), 'updated_at'=>now()],
+            ['name' => 'Cash', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Credit Card', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Debit Card', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Net Banking', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Cheque', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Google Pay', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Phonepe', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Paytm', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'AmazonPe', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'ATM', 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'Whatsapp', 'created_at' => now(), 'updated_at' => now()],
         ];
-        
+
         Schema::enableForeignKeyConstraints();
         DB::table('modes')->truncate();
         Schema::disableForeignKeyConstraints();
